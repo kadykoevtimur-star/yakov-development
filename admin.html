@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Yakov Development</title>
+  <link rel="icon" type="image/svg+xml" href="logo.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Heebo:wght@300;400;500;700;800&family=Playfair+Display:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin-body">
+
+  <!-- ============ LOGIN SCREEN ============ -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <svg class="logo-mark" viewBox="0 0 220 220" fill="none" style="width:90px;height:90px;color:var(--accent);margin:0 auto 24px;display:block">
+        <circle cx="110" cy="110" r="98" stroke="currentColor" stroke-width="2.5" fill="none"/>
+        <text x="110" y="142" text-anchor="middle" font-family="'Playfair Display', 'Heebo', serif" font-size="88" font-weight="500" letter-spacing="-1" fill="currentColor" stroke="none">YD</text>
+      </svg>
+      <h2 data-i18n="admin.login">Administrator Login</h2>
+      <p class="login-hint">Yakov Development</p>
+      <form id="loginForm" class="login-form">
+        <div class="form-field">
+          <label data-i18n="admin.password">Password</label>
+          <input type="password" id="passwordInput" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" data-i18n="admin.loginBtn">Sign In</button>
+        <div class="login-error" id="loginError" data-i18n="admin.loginError">Invalid password</div>
+      </form>
+      <!-- Password hint intentionally removed for security -->
+      <div class="login-default" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- ============ ADMIN APP ============ -->
+  <div class="admin-app" id="adminApp" style="display:none">
+    <header class="admin-header">
+      <div class="container admin-header-inner">
+        <a href="index.html" class="logo-link">
+          <svg class="logo-mark" viewBox="0 0 220 220" fill="none" style="width:44px;height:44px">
+            <circle cx="110" cy="110" r="98" stroke="currentColor" stroke-width="2.5" fill="none"/>
+            <text x="110" y="142" text-anchor="middle" font-family="'Playfair Display', 'Heebo', serif" font-size="88" font-weight="500" letter-spacing="-1" fill="currentColor" stroke="none">YD</text>
+          </svg>
+          <div class="logo-text">
+            <span class="logo-name">YAKOV DEVELOPMENT</span>
+            <span class="logo-tag" data-i18n="admin.subtitle">Site content management</span>
+          </div>
+        </a>
+
+        <div class="header-actions">
+          <div class="lang-switcher">
+            <button class="lang-btn" data-lang="he">עב</button>
+            <button class="lang-btn active" data-lang="ru">RU</button>
+            <button class="lang-btn" data-lang="en">EN</button>
+          </div>
+          <a href="index.html" class="btn btn-ghost" data-i18n="admin.viewSite">View Site</a>
+          <button id="logoutBtn" class="btn btn-outline" data-i18n="admin.logout">Sign Out</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="admin-main">
+      <div class="container">
+        <h1 class="admin-page-title" data-i18n="admin.title">Admin Panel</h1>
+
+        <div class="admin-tabs">
+          <button class="admin-tab active" data-tab="photos">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <path d="M21 15l-5-5L5 21"/>
+            </svg>
+            <span data-i18n="admin.tabPhotos">Photos</span>
+            <span class="count-badge" id="photoCount">0</span>
+          </button>
+          <button class="admin-tab" data-tab="videos">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <polygon points="23 7 16 12 23 17 23 7"/>
+              <rect x="1" y="5" width="15" height="14" rx="2"/>
+            </svg>
+            <span data-i18n="admin.tabVideos">Videos</span>
+            <span class="count-badge" id="videoCount">0</span>
+          </button>
+          <button class="admin-tab" data-tab="orders">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            <span data-i18n="admin.tabOrders">Requests</span>
+            <span class="count-badge" id="orderCount">0</span>
+          </button>
+        </div>
+
+        <!-- ============ PHOTOS TAB ============ -->
+        <div class="tab-panel active" id="photosPanel">
+          <div class="upload-zone" id="photoDropZone">
+            <input type="file" id="photoInput" accept="image/*" multiple hidden>
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" width="56" height="56">
+              <path d="M24 6v26"/>
+              <path d="M14 16l10-10 10 10"/>
+              <path d="M8 32v8a4 4 0 0 0 4 4h24a4 4 0 0 0 4-4v-8"/>
+            </svg>
+            <h3 data-i18n="admin.uploadPhoto">Upload Photos</h3>
+            <p data-i18n="admin.uploadHint">Drag files here or click to select</p>
+          </div>
+
+          <div class="admin-grid" id="adminPhotoGrid"></div>
+          <div class="empty-state" id="emptyPhotos" data-i18n="admin.noPhotos">No photos uploaded yet</div>
+        </div>
+
+        <!-- ============ VIDEOS TAB ============ -->
+        <div class="tab-panel" id="videosPanel">
+          <div class="video-add-form">
+            <div class="form-field" style="flex:1;margin-bottom:0">
+              <label data-i18n="admin.videoUrl">YouTube or Vimeo URL</label>
+              <input type="url" id="videoUrlInput" placeholder="https://www.youtube.com/watch?v=...">
+            </div>
+            <button id="addVideoBtn" class="btn btn-primary" data-i18n="admin.videoAdd">Add Video</button>
+          </div>
+
+          <div class="admin-grid" id="adminVideoGrid"></div>
+          <div class="empty-state" id="emptyVideos" data-i18n="admin.noVideos">No videos added yet</div>
+        </div>
+
+        <!-- ============ ORDERS TAB ============ -->
+        <div class="tab-panel" id="ordersPanel">
+          <div class="orders-notice">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            <span data-i18n="admin.ordersInfo">All orders are sent directly to your email. This page shows local browser history only.</span>
+          </div>
+          <div class="orders-list" id="ordersList"></div>
+          <div class="empty-state" id="emptyOrders" data-i18n="admin.noOrders">No requests in browser history yet</div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="i18n.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

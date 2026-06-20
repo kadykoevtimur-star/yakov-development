@@ -1,0 +1,15 @@
+# Claude session files
+.claude/
+
+# Cloudflared binary (54 MB, only for local dev tunnels)
+cloudflared.exe
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
