@@ -30,7 +30,8 @@ const TRANSLATIONS = {
     'hero.subtitle': 'Экспертные работы по гипсокартону и крупномасштабное строительство. Любая сложность — бескомпромиссное качество.',
     'hero.ctaPrimary': 'Заказать проект',
     'hero.ctaSecondary': 'Наши работы',
-    'hero.stat1': 'Работаем с',
+    'hero.stat1num': 'С 2021',
+    'hero.stat1': 'года',
     'hero.stat2': 'Завершённых проектов',
     'hero.stat3': 'Довольных клиентов',
 
@@ -159,7 +160,8 @@ const TRANSLATIONS = {
     'hero.subtitle': 'Drywall expertise and large-scale construction. Any complexity — uncompromising quality.',
     'hero.ctaPrimary': 'Request a Quote',
     'hero.ctaSecondary': 'View Our Work',
-    'hero.stat1': 'Working Since',
+    'hero.stat1num': 'Since',
+    'hero.stat1': '2021',
     'hero.stat2': 'Completed Projects',
     'hero.stat3': 'Client Satisfaction',
 
@@ -288,7 +290,8 @@ const TRANSLATIONS = {
     'hero.subtitle': 'מומחיות בעבודות גבס ובנייה בקנה מידה גדול. כל מורכבות — איכות ללא פשרות.',
     'hero.ctaPrimary': 'בקש הצעת מחיר',
     'hero.ctaSecondary': 'הצג עבודות',
-    'hero.stat1': 'פועלים משנת',
+    'hero.stat1num': 'משנת',
+    'hero.stat1': '2021',
     'hero.stat2': 'פרויקטים שהושלמו',
     'hero.stat3': 'שביעות רצון לקוחות',
 
