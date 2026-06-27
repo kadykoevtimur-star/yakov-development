@@ -1,5 +1,9 @@
 User-agent: *
 Allow: /
-Disallow: /admin.html
+
+# The admin panel is kept out of search results via an X-Robots-Tag: noindex
+# response header (see netlify.toml) and a <meta name="robots" noindex> tag,
+# rather than being named here — listing it in robots.txt would only advertise
+# the path to anyone reading this file.
 
 Sitemap: https://yakovdev.com/sitemap.xml

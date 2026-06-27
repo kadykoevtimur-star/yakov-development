@@ -15,6 +15,26 @@ document.addEventListener('DOMContentLoaded', () => {
   initProjectsMap();
 });
 
+/* ============ SECURITY HELPERS ============ */
+// Escape text before putting it in an HTML/attribute context.
+function esc(s) {
+  if (s == null) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+// Allow only http(s) and data: image URLs into src attributes — blocks
+// javascript:, vbscript:, etc. Returns '' for anything suspicious.
+function safeUrl(u) {
+  if (u == null) return '';
+  const s = String(u).trim();
+  if (/^(https?:|data:image\/)/i.test(s)) return esc(s);
+  return '';
+}
+
 /* ============ HEADER SCROLL ============ */
 function initHeader() {
   const header = document.getElementById('header');
@@ -82,7 +102,7 @@ function loadGallery() {
 
   photoGrid.innerHTML = photos.map((p, i) => `
     <div class="gallery-item" data-type="photo" data-index="${i}">
-      <img src="${p.src}" alt="${p.title || 'Project photo'}" loading="lazy">
+      <img src="${safeUrl(p.src)}" alt="${esc(p.title || 'Project photo')}" loading="lazy">
       <div class="overlay"></div>
     </div>
   `).join('');
@@ -90,7 +110,7 @@ function loadGallery() {
   videoGrid.innerHTML = videos.map((v, i) => `
     <div class="gallery-item" data-type="video" data-index="${i}">
       ${v.thumb
-        ? `<img src="${v.thumb}" alt="${v.title || 'Project video'}" loading="lazy">`
+        ? `<img src="${safeUrl(v.thumb)}" alt="${esc(v.title || 'Project video')}" loading="lazy">`
         : `<div style="background:linear-gradient(135deg,#16161a,#1c1c21);width:100%;height:100%"></div>`}
       <div class="play-icon">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg>
@@ -129,14 +149,17 @@ function openLightbox(type, index) {
   if (type === 'photo') {
     const photo = getPhotos()[index];
     if (!photo) return;
-    content.innerHTML = `<img src="${photo.src}" alt="">`;
+    content.innerHTML = `<img src="${safeUrl(photo.src)}" alt="">`;
   } else {
     const video = getVideos()[index];
     if (!video) return;
     const embed = toEmbedUrl(video.url);
+    // Only ever embed a YouTube/Vimeo URL we built ourselves, or a safe-scheme
+    // direct video URL — never raw user input straight into the DOM.
+    const safe = safeUrl(video.url);
     content.innerHTML = embed
-      ? `<iframe src="${embed}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`
-      : `<video controls autoplay src="${video.url}"></video>`;
+      ? `<iframe src="${esc(embed)}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`
+      : (safe ? `<video controls autoplay src="${safe}"></video>` : '');
   }
   lightbox.classList.add('show');
   document.body.style.overflow = 'hidden';
@@ -167,6 +190,17 @@ function initOrderForm() {
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
+
+    // Honeypot: real users never see/fill this. If it's filled, it's a bot —
+    // silently pretend success and send nothing.
+    const honey = form.querySelector('[name="_honey"]');
+    if (honey && honey.value) {
+      form.reset();
+      const ok = document.getElementById('formSuccess');
+      ok.classList.add('show');
+      setTimeout(() => ok.classList.remove('show'), 6000);
+      return;
+    }
 
     const submitBtn = form.querySelector('button[type="submit"]');
     const originalText = submitBtn.textContent;
@@ -200,6 +234,7 @@ function initOrderForm() {
           _subject: `🏗️ Новая заявка с сайта Yakov Development — ${data.name}`,
           _template: 'table',
           _captcha: 'false',
+          _honey: '',
           'Имя / Name': data.name,
           'Телефон / Phone': data.phone,
           'Email': data.email || '—',
@@ -483,11 +518,11 @@ function renderProjectsOnMap() {
   PROJECTS.forEach(p => {
     const popupHtml = `
       <div class="project-popup">
-        <img src="${p.img}" alt="${p.title[lang]}" class="project-popup-img" loading="lazy">
+        <img src="${safeUrl(p.img)}" alt="${esc(p.title[lang])}" class="project-popup-img" loading="lazy">
         <div class="project-popup-body">
-          <div class="project-popup-city">${p.city[lang]}</div>
-          <div class="project-popup-title">${p.title[lang]}</div>
-          <div class="project-popup-meta">${p.type[lang]} • ${p.year}</div>
+          <div class="project-popup-city">${esc(p.city[lang])}</div>
+          <div class="project-popup-title">${esc(p.title[lang])}</div>
+          <div class="project-popup-meta">${esc(p.type[lang])} • ${esc(p.year)}</div>
         </div>
       </div>
     `;

@@ -2,9 +2,32 @@
    ADMIN PANEL LOGIC
    =========================== */
 
-// IMPORTANT: change this before deploying. Static site = client-side auth only.
-// For real security, set up Netlify Identity or basic auth in netlify.toml.
-const ADMIN_PASSWORD = '88Yakov88';
+// ─────────────────────────────────────────────────────────────────────────
+// SECURITY NOTICE — READ THIS.
+// This is a STATIC site. Anything that runs in the browser can be bypassed by
+// the visitor (DevTools, editing sessionStorage, calling showApp() directly).
+// Therefore this "login" is NOT a security boundary — it only keeps the panel
+// out of the way for casual visitors. It gates NOTHING shared: the admin panel
+// only reads/writes THIS browser's localStorage; there is no server, no API,
+// no other user's data to reach. So a bypass exposes nothing of value.
+//
+// We store only the SHA-256 hash of the passphrase (never the cleartext) so the
+// owner's password is not leaked in the public bundle and cannot be reused
+// against their other accounts.
+//
+// For a REAL content backend (orders DB, shared photo gallery), move auth
+// server-side: Netlify Identity, an edge function with a session cookie, or a
+// hosted CMS. Never trust the client.
+// ─────────────────────────────────────────────────────────────────────────
+const ADMIN_PASSWORD_SHA256 =
+  'f200382e5cedbc8da497d460825cc38cb3aee1672f7fda9604895b88f3c5ab7a';
+
+async function sha256Hex(text) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   I18N.init();
@@ -30,10 +53,11 @@ function initLanguage() {
 /* ============ LOGIN ============ */
 function initLogin() {
   const form = document.getElementById('loginForm');
-  form.addEventListener('submit', e => {
+  form.addEventListener('submit', async e => {
     e.preventDefault();
     const password = document.getElementById('passwordInput').value;
-    if (password === ADMIN_PASSWORD) {
+    const hash = await sha256Hex(password);
+    if (hash === ADMIN_PASSWORD_SHA256) {
       sessionStorage.setItem('yd_admin', '1');
       showApp();
     } else {
@@ -144,7 +168,7 @@ function renderPhotos() {
 
   grid.innerHTML = photos.map(p => `
     <div class="admin-item" data-id="${p.id}">
-      <img src="${p.src}" alt="${escapeHtml(p.title)}">
+      <img src="${safeUrl(p.src)}" alt="${escapeHtml(p.title)}">
       <div class="admin-item-overlay">
         <div class="admin-item-title">${escapeHtml(p.title)}</div>
         <button class="delete-btn" data-action="delete-photo" data-id="${p.id}">${I18N.t('admin.delete')}</button>
@@ -219,7 +243,7 @@ function renderVideos() {
   grid.innerHTML = videos.map(v => `
     <div class="admin-item" data-id="${v.id}">
       ${v.thumb
-        ? `<img src="${v.thumb}" alt="${escapeHtml(v.title)}">`
+        ? `<img src="${safeUrl(v.thumb)}" alt="${escapeHtml(v.title)}">`
         : `<div class="video-thumb"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg></div>`}
       <div class="admin-item-overlay">
         <div class="admin-item-title">${escapeHtml(v.title)}</div>
@@ -322,6 +346,14 @@ function escapeHtml(s) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
+}
+
+// Only allow http(s) and data:image URLs into src attributes.
+function safeUrl(u) {
+  if (u == null) return '';
+  const s = String(u).trim();
+  if (/^(https?:|data:image\/)/i.test(s)) return escapeHtml(s);
+  return '';
 }
 
 function formatDate(iso) {

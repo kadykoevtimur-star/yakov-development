@@ -1,21 +1,46 @@
 [build]
   publish = "."
 
+# ----------------------------------------------------------------------------
+# Security headers — applied to every response (default-deny posture).
+# CSP whitelists only the exact external origins the site actually uses:
+#   - unpkg.com          Leaflet JS/CSS (loaded with SRI)
+#   - fonts.googleapis   Google Fonts stylesheet
+#   - fonts.gstatic.com  font files
+#   - formsubmit.co      order form POST (fetch)
+#   - youtube / vimeo    gallery video embeds (iframes)
+#   - https: + data:     images (Unsplash, CARTO tiles, YouTube thumbs, base64)
+# Anything not listed is blocked, which neutralises injected <script>/<iframe>.
+# ----------------------------------------------------------------------------
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Frame-Options = "SAMEORIGIN"
+    Content-Security-Policy = "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; script-src 'self' https://unpkg.com; connect-src 'self' https://formsubmit.co; frame-src https://www.youtube.com https://player.vimeo.com; form-action 'self' https://formsubmit.co; upgrade-insecure-requests"
+    X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=(), usb=(), interest-cohort=()"
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+    Cross-Origin-Opener-Policy = "same-origin"
+    X-Permitted-Cross-Domain-Policies = "none"
 
+# Admin panel: keep it out of search indexes and never cache it.
+# (It is not a real security boundary — see admin.js. Real CMS needs a backend.)
+[[headers]]
+  for = "/admin.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"
+    Cache-Control = "no-store, max-age=0"
+
+[[headers]]
+  for = "/admin.js"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-store, max-age=0"
+
+# Static asset caching
 [[headers]]
   for = "/*.css"
-  [headers.values]
-    Cache-Control = "public, max-age=604800"
-
-[[headers]]
-  for = "/*.js"
   [headers.values]
     Cache-Control = "public, max-age=604800"
 
@@ -28,6 +53,17 @@
   for = "/*.png"
   [headers.values]
     Cache-Control = "public, max-age=2592000"
+
+# script.js / i18n.js cache (admin.js handled above with no-store)
+[[headers]]
+  for = "/script.js"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/i18n.js"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
 
 [[redirects]]
   from = "/home"
