@@ -30,7 +30,7 @@ const TRANSLATIONS = {
     'hero.subtitle': 'Экспертные работы по гипсокартону и крупномасштабное строительство. Любая сложность — бескомпромиссное качество.',
     'hero.ctaPrimary': 'Заказать проект',
     'hero.ctaSecondary': 'Наши работы',
-    'hero.stat1': 'Лет опыта',
+    'hero.stat1': 'Работаем с',
     'hero.stat2': 'Завершённых проектов',
     'hero.stat3': 'Довольных клиентов',
 
@@ -42,7 +42,7 @@ const TRANSLATIONS = {
     'about.b2': 'Строгие сроки, прозрачное ценообразование',
     'about.b3': 'Премиальные материалы и современное оборудование',
     'about.b4': 'Полная гарантия на проект',
-    'about.cardYears': 'Лет на рынке',
+    'about.cardYears': 'На рынке с',
     'about.cardScale': 'Любой масштаб проекта',
 
     'services.eyebrow': 'Чем мы занимаемся',
@@ -159,7 +159,7 @@ const TRANSLATIONS = {
     'hero.subtitle': 'Drywall expertise and large-scale construction. Any complexity — uncompromising quality.',
     'hero.ctaPrimary': 'Request a Quote',
     'hero.ctaSecondary': 'View Our Work',
-    'hero.stat1': 'Years Experience',
+    'hero.stat1': 'Working Since',
     'hero.stat2': 'Completed Projects',
     'hero.stat3': 'Client Satisfaction',
 
@@ -171,7 +171,7 @@ const TRANSLATIONS = {
     'about.b2': 'Strict deadlines, transparent pricing',
     'about.b3': 'Premium materials and modern equipment',
     'about.b4': 'Full project warranty',
-    'about.cardYears': 'Years on the market',
+    'about.cardYears': 'On the market since',
     'about.cardScale': 'Any project scale',
 
     'services.eyebrow': 'What We Do',
@@ -288,7 +288,7 @@ const TRANSLATIONS = {
     'hero.subtitle': 'מומחיות בעבודות גבס ובנייה בקנה מידה גדול. כל מורכבות — איכות ללא פשרות.',
     'hero.ctaPrimary': 'בקש הצעת מחיר',
     'hero.ctaSecondary': 'הצג עבודות',
-    'hero.stat1': 'שנות ניסיון',
+    'hero.stat1': 'פועלים משנת',
     'hero.stat2': 'פרויקטים שהושלמו',
     'hero.stat3': 'שביעות רצון לקוחות',
 
@@ -300,7 +300,7 @@ const TRANSLATIONS = {
     'about.b2': 'לוחות זמנים קפדניים, תמחור שקוף',
     'about.b3': 'חומרים פרימיום וציוד מודרני',
     'about.b4': 'אחריות מלאה על הפרויקט',
-    'about.cardYears': 'שנים בשוק',
+    'about.cardYears': 'בשוק משנת',
     'about.cardScale': 'כל היקף פרויקט',
 
     'services.eyebrow': 'מה אנחנו עושים',

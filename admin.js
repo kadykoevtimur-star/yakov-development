@@ -20,7 +20,7 @@
 // hosted CMS. Never trust the client.
 // ─────────────────────────────────────────────────────────────────────────
 const ADMIN_PASSWORD_SHA256 =
-  'f200382e5cedbc8da497d460825cc38cb3aee1672f7fda9604895b88f3c5ab7a';
+  '0723531a2fbe67653368ab879cfe08564043e6059806b6ca69c1fd058ca3f2f3';
 
 async function sha256Hex(text) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
