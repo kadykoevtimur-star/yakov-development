@@ -38,12 +38,25 @@
     X-Robots-Tag = "noindex, nofollow"
     Cache-Control = "no-store, max-age=0"
 
-# Static asset caching
+# App code (HTML/CSS/JS) — always revalidate via ETag so content edits appear
+# immediately. A 304 Not Modified is tiny, so this stays fast while never
+# serving stale text/translations to returning visitors.
 [[headers]]
   for = "/*.css"
   [headers.values]
-    Cache-Control = "public, max-age=604800"
+    Cache-Control = "public, max-age=0, must-revalidate"
 
+[[headers]]
+  for = "/script.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/i18n.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Truly static media — safe to cache long (rarely changes; rename if it does).
 [[headers]]
   for = "/*.svg"
   [headers.values]
@@ -53,17 +66,6 @@
   for = "/*.png"
   [headers.values]
     Cache-Control = "public, max-age=2592000"
-
-# script.js / i18n.js cache (admin.js handled above with no-store)
-[[headers]]
-  for = "/script.js"
-  [headers.values]
-    Cache-Control = "public, max-age=604800"
-
-[[headers]]
-  for = "/i18n.js"
-  [headers.values]
-    Cache-Control = "public, max-age=604800"
 
 [[redirects]]
   from = "/home"
